@@ -178,4 +178,65 @@ Optional bonus:
 
 - add authentication for SSE or HTTP transport
 - support both SQLite and PostgreSQL with the same MCP surface
-- add richer output annotations or pagination
+
+## Setup and Usage Instructions
+
+### 1. Installation
+Install the required dependencies:
+```bash
+pip install fastmcp
+```
+
+### 2. Database Initialization
+Initialize the SQLite database with seed data:
+```bash
+python implementation/init_db.py
+```
+This creates `implementation/lab.db`.
+
+### 3. Running the Server
+You can run the server directly (stdio transport by default):
+```bash
+python implementation/mcp_server.py
+```
+
+### 4. Verification
+Run the automated discovery verification script:
+```bash
+python implementation/verify_server.py
+```
+Run unit tests:
+```bash
+pytest implementation/tests/test_server.py
+```
+
+## Tool Descriptions
+
+- **`search(table, filters, columns, limit, offset, order_by, descending)`**: Queries the database with optional filters (equality), sorting, and pagination.
+- **`insert(table, values)`**: Inserts a new record into the specified table.
+- **`aggregate(table, metric, column, filters, group_by)`**: Performs aggregate functions like `COUNT`, `AVG`, `SUM`, `MIN`, `MAX`.
+
+## Resource URIs
+
+- `schema://database`: Returns the full schema of the database.
+- `schema://table/{table_name}`: Returns the schema for a specific table.
+
+## Client Configuration Examples
+
+### Gemini CLI
+```bash
+gemini mcp add sqlite-lab /PATH/TO/python /PATH/TO/implementation/mcp_server.py
+```
+
+### Claude Code (`.mcp.json`)
+```json
+{
+  "mcpServers": {
+    "sqlite-lab": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["/PATH/TO/implementation/mcp_server.py"]
+    }
+  }
+}
+```
